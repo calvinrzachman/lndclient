@@ -20,6 +20,7 @@ const (
 	WalletKitServiceMac     LnrpcServiceMac = "walletkit.macaroon"
 	RouterServiceMac        LnrpcServiceMac = "router.macaroon"
 	SignerServiceMac        LnrpcServiceMac = "signer.macaroon"
+	SwitchServiceMac        LnrpcServiceMac = "switch.macaroon"
 	ReadOnlyServiceMac      LnrpcServiceMac = "readonly.macaroon"
 )
 
@@ -33,6 +34,7 @@ var (
 		SignerServiceMac,
 		WalletKitServiceMac,
 		RouterServiceMac,
+		SwitchServiceMac,
 		AdminServiceMac,
 		ReadOnlyServiceMac,
 	}
@@ -113,6 +115,7 @@ func newMacaroonPouch(macaroonDir, customMacPath, customMacHex string) (macaroon
 			SignerServiceMac:        mac,
 			WalletKitServiceMac:     mac,
 			RouterServiceMac:        mac,
+			SwitchServiceMac:        mac,
 			AdminServiceMac:         mac,
 			ReadOnlyServiceMac:      mac,
 		}, nil
