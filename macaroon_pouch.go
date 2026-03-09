@@ -35,7 +35,6 @@ var (
 		SignerServiceMac,
 		WalletKitServiceMac,
 		RouterServiceMac,
-		SwitchServiceMac,
 		AdminServiceMac,
 		ReadOnlyServiceMac,
 	}
