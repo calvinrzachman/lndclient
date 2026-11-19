@@ -386,6 +386,16 @@ type InterceptedHtlc struct {
 	// InWireCustomRecords are custom records sent by the sender that were
 	// only present in the wire message and not the onion itself.
 	InWireCustomRecords map[uint64][]byte
+
+	// AutoFailHeight is lnd's deadline for this held htlc. For an htlc
+	// held off-chain it is the height at which lnd fails the htlc back to
+	// keep its channel from force-closing, which is earlier than
+	// IncomingExpiryHeight by lnd's reject delta. For an htlc whose
+	// incoming channel has closed and that lnd offers again from its
+	// on-chain resolver, it is the settlement deadline and equals
+	// IncomingExpiryHeight; lnd then accepts only a settle. A zero value
+	// means unknown, for example an lnd that predates the field.
+	AutoFailHeight int32
 }
 
 // HtlcInterceptHandler is a function signature for handling code for htlc
@@ -1071,6 +1081,7 @@ func (r *routerClient) InterceptHtlcs(ctx context.Context,
 				CustomRecords:        request.CustomRecords,
 				OnionBlob:            request.OnionBlob,
 				InWireCustomRecords:  inWireCustomRecords,
+				AutoFailHeight:       request.AutoFailHeight,
 			}
 
 			// Try to send our interception request, failing on
@@ -1111,6 +1122,7 @@ func (r *routerClient) InterceptHtlcs(ctx context.Context,
 					sendErr(err)
 					return
 				}
+
 
 				rpcResp, err := rpcInterceptorResponse(
 					request, resp,
