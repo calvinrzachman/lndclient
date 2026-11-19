@@ -399,7 +399,9 @@ type InterceptedHtlc struct {
 }
 
 // HtlcInterceptHandler is a function signature for handling code for htlc
-// interception.
+// interception. Returning a nil response with a nil error sends nothing for
+// the htlc, which leaves it held in lnd. That is the only correct answer to
+// an htlc lnd will accept just a settle for when the handler has no preimage.
 type HtlcInterceptHandler func(context.Context,
 	InterceptedHtlc) (*InterceptedHtlcResponse, error)
 
@@ -1123,6 +1125,11 @@ func (r *routerClient) InterceptHtlcs(ctx context.Context,
 					return
 				}
 
+				// A nil response means the handler chose not
+				// to answer, so the htlc stays held.
+				if resp == nil {
+					return
+				}
 
 				rpcResp, err := rpcInterceptorResponse(
 					request, resp,
